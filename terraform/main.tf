@@ -82,3 +82,31 @@ resource "aws_route_table_association" "public_2" {
   subnet_id      = aws_subnet.public_2.id
   route_table_id = aws_route_table.public.id
 }
+
+
+
+# Create private subnets across two Availability Zones.
+# These subnets will host application workloads that should not be
+# directly reachable from the public internet.
+
+resource "aws_subnet" "private_1" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.11.0/24"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    Name    = "tim-lab-private-1"
+    Project = "tim-lab"
+  }
+}
+
+resource "aws_subnet" "private_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.12.0/24"
+  availability_zone = "us-east-1b"
+
+  tags = {
+    Name    = "tim-lab-private-2"
+    Project = "tim-lab"
+  }
+}

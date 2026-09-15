@@ -51,3 +51,34 @@ resource "aws_internet_gateway" "main" {
     Project = "tim-lab"
   }
 }
+
+# Create the route table used by the public subnets.
+# Traffic destined for the internet will be routed through the Internet Gateway.
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+
+  tags = {
+    Name    = "tim-lab-public-rt"
+    Project = "tim-lab"
+  }
+}
+
+# Associate the first public subnet with the public route table.
+
+resource "aws_route_table_association" "public_1" {
+  subnet_id      = aws_subnet.public_1.id
+  route_table_id = aws_route_table.public.id
+}
+
+# Associate the second public subnet with the public route table.
+
+resource "aws_route_table_association" "public_2" {
+  subnet_id      = aws_subnet.public_2.id
+  route_table_id = aws_route_table.public.id
+}

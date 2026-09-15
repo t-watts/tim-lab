@@ -38,3 +38,16 @@ resource "aws_subnet" "public_2" {
     Project = "tim-lab"
   }
 }
+
+
+# Create an Internet Gateway and attach it to the tim-lab VPC.
+# This provides a path between the VPC and the public internet.
+
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name    = "tim-lab-igw"
+    Project = "tim-lab"
+  }
+}

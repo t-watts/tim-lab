@@ -1,3 +1,6 @@
+# Create the main VPC for the tim-lab environment.
+# All application networking resources will be deployed within this VPC.
+
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
@@ -5,6 +8,33 @@ resource "aws_vpc" "main" {
 
   tags = {
     Name    = "tim-lab-vpc"
+    Project = "tim-lab"
+  }
+}
+
+# Create public subnets across two Availability Zones for high availability.
+# These subnets will host resources that require a route to the Internet Gateway.
+
+resource "aws_subnet" "public_1" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name    = "tim-lab-public-1"
+    Project = "tim-lab"
+  }
+}
+
+resource "aws_subnet" "public_2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "us-east-1b"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name    = "tim-lab-public-2"
     Project = "tim-lab"
   }
 }

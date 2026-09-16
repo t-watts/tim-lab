@@ -1,7 +1,12 @@
 # Verification 01 — AWS Network Foundation
 
-This document verifies the AWS infrastructure created by Terraform
-for the tim-lab project.
+## Purpose
+
+This is the first major checkpoint for the `tim-lab` project. So far, the core AWS networking and IAM infrastructure needed for EKS has been built with Terraform.
+
+Before moving on to EKS, I'm using the AWS CLI to verify that everything was created and configured as expected. I also tested the private network with a temporary EC2 instance to confirm that it could reach the internet through the NAT instance without having a public IP.
+
+This document records the working environment before moving on to EKS and Kubernetes.
 
 ## 1. VPC
 

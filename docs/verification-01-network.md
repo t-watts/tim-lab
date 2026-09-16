@@ -2,11 +2,24 @@
 
 ## Purpose
 
-This is the first major checkpoint for the `tim-lab` project. So far, the core AWS networking and IAM infrastructure needed for EKS has been built with Terraform.
+This is the first major checkpoint for the `tim-lab` project. Before moving on to EKS, I'm verifying that the infrastructure built with Terraform exists in AWS and is working as intended.
 
-Before moving on to EKS, I'm using the AWS CLI to verify that everything was created and configured as expected. I also tested the private network with a temporary EC2 instance to confirm that it could reach the internet through the NAT instance without having a public IP.
+This checkpoint verifies:
 
-This document records the working environment before moving on to EKS and Kubernetes.
+- VPC and CIDR configuration
+- Public and private subnets across two Availability Zones
+- Internet Gateway
+- Public and private route tables
+- NAT EC2 instance and Elastic IP
+- Private subnet internet access through the NAT instance
+- Security groups
+- IAM roles and policies
+- SSM access to private EC2 instances
+- EKS control-plane IAM role
+- EKS worker-node IAM role
+- Terraform state
+
+The sections below use AWS CLI commands to show the actual deployed resources and configuration.
 
 ## 1. VPC
 

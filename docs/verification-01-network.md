@@ -41,7 +41,7 @@ $ aws ec2 describe-subnets \
 ## 3. Internet Gateway
 
 Verify that the project's Internet Gateway exists and is attached to the `tim-lab` VPC. The Internet Gateway provides internet connectivity for resources using a route table that directs internet-bound traffic to it.
-
+```
 $ aws ec2 describe-internet-gateways \
   --filters "Name=tag:Project,Values=tim-lab" \
   --query 'InternetGateways[*].[Tags[?Key==`Name`]|[0].Value,InternetGatewayId,Attachments[0].VpcId,Attachments[0].State]' \

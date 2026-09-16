@@ -1,5 +1,11 @@
 # Verification 01 — AWS Network Foundation
 
+## Architecture
+
+The diagram below shows the verified AWS network architecture at this stage of the project.
+
+![tim-lab AWS Network Architecture](images/tim-lab-network-architecture.png)
+
 ## Purpose
 
 This is the first major checkpoint for the `tim-lab` project. Before moving on to EKS, I'm verifying that the infrastructure built with Terraform exists in AWS and is working as intended.

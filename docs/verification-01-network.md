@@ -70,3 +70,19 @@ $ aws ec2 describe-internet-gateways \
 |  tim-lab-igw|  igw-0a615ee19871cd9b3  |  vpc-0a8d1f11995cc8afc  |  available |
 +-------------+-------------------------+-------------------------+------------+
 ```
+
+## 4. Route Tables
+
+Verify that separate public and private route tables exist for the VPC. The public route table provides direct internet access through the Internet Gateway, while the private route table sends internet-bound traffic through the NAT instance.
+```
+$ aws ec2 describe-route-tables \
+  --filters "Name=tag:Project,Values=tim-lab" \
+  --query 'RouteTables[*].[Tags[?Key==`Name`]|[0].Value,RouteTableId,VpcId]' \
+  --output table
+--------------------------------------------------------------------------
+|                           DescribeRouteTables                          |
++--------------------+-------------------------+-------------------------+
+|  tim-lab-public-rt |  rtb-0c9e40b0345406217  |  vpc-0a8d1f11995cc8afc  |
+|  tim-lab-private-rt|  rtb-0869eb97da5f22946  |  vpc-0a8d1f11995cc8afc  |
++--------------------+-------------------------+-------------------------+
+```

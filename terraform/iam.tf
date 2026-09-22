@@ -100,3 +100,9 @@ resource "aws_iam_role_policy_attachment" "eks_ecr_read_only" {
   role       = aws_iam_role.eks_node.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
 }
+
+# Allow the Amazon VPC CNI to manage ENIs and IP addresses required for Kubernetes pod networking.
+resource "aws_iam_role_policy_attachment" "eks_cni" {
+  role       = aws_iam_role.eks_node.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+}

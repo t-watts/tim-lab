@@ -1,21 +1,6 @@
 # Find the latest Amazon Linux 2023 AMI for the NAT instance.
 # Using a data source avoids hardcoding a region-specific AMI ID.
 
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-2023.*-x86_64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-
 # Security group for the NAT instance.
 # Allow traffic from the tim-lab VPC and outbound access to the internet.
 
@@ -51,7 +36,7 @@ resource "aws_security_group" "nat" {
 # will forward traffic on behalf of other resources.
 
 resource "aws_instance" "nat" {
-  ami                    = data.aws_ami.amazon_linux.id
+  ami                    = var.nat_ami_id
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.public_1.id
   vpc_security_group_ids = [aws_security_group.nat.id]

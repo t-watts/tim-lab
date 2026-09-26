@@ -101,8 +101,40 @@ resource "aws_iam_role_policy_attachment" "eks_ecr_read_only" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
 }
 
-# Allow the Amazon VPC CNI to manage ENIs and IP addresses required for Kubernetes pod networking.
-resource "aws_iam_role_policy_attachment" "eks_cni" {
-  role       = aws_iam_role.eks_node.name
+# Allow the Amazon VPC CNI to manage ENIs and IP addresses required for Kubernetes pod networking.  - commented this out, because the VPC CNI now receives this policy through its dedicated IAM role via EKS Pod Identity.
+#resource "aws_iam_role_policy_attachment" "eks_cni" {
+#  role       = aws_iam_role.eks_node.name
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+#}
+
+# Dedicated IAM role for the VPC CNI.
+# The aws-node pods will assume this role through EKS Pod Identity.
+resource "aws_iam_role" "eks_cni" {
+  name = "tim-lab-eks-cni-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [{
+      Effect = "Allow"
+
+      Principal = {
+        Service = "pods.eks.amazonaws.com"
+      }
+
+      Action = [
+        "sts:AssumeRole",
+        "sts:TagSession"
+      ]
+    }]
+  })
+
+  tags = {
+    Project = "tim-lab"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "eks_cni_dedicated" {
+  role       = aws_iam_role.eks_cni.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }

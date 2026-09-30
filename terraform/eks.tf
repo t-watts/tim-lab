@@ -1,5 +1,6 @@
 # Amazon EKS control plane for the tim-lab Kubernetes cluster.
 resource "aws_eks_cluster" "main" {
+  count    = var.enable_eks ? 1 : 0
   name     = "tim-lab-eks"
   role_arn = aws_iam_role.eks_cluster.arn
   version  = "1.36"
@@ -29,7 +30,9 @@ resource "aws_eks_cluster" "main" {
 # EKS Pod Identity Agent
 # Allows Kubernetes workloads to assume dedicated IAM roles.
 resource "aws_eks_addon" "pod_identity" {
-  cluster_name  = aws_eks_cluster.main.name
+  count = var.enable_eks ? 1 : 0
+
+  cluster_name  = aws_eks_cluster.main[0].name
   addon_name    = "eks-pod-identity-agent"
   addon_version = "v1.3.10-eksbuild.3"
 
@@ -37,10 +40,11 @@ resource "aws_eks_addon" "pod_identity" {
     Project = "tim-lab"
   }
 }
-
 # Managed worker nodes for the tim-lab EKS cluster.
 resource "aws_eks_node_group" "main" {
-  cluster_name    = aws_eks_cluster.main.name
+  count = var.enable_eks ? 1 : 0
+
+  cluster_name    = aws_eks_cluster.main[0].name
   node_group_name = "tim-lab-nodes"
   node_role_arn   = aws_iam_role.eks_node.arn
 
@@ -76,7 +80,8 @@ resource "aws_eks_node_group" "main" {
 
 # Associates the aws-node service account with the dedicated CNI IAM role using EKS Pod Identity.
 resource "aws_eks_pod_identity_association" "vpc_cni" {
-  cluster_name    = aws_eks_cluster.main.name
+  count           = var.enable_eks ? 1 : 0
+  cluster_name    = aws_eks_cluster.main[0].name
   namespace       = "kube-system"
   service_account = "aws-node"
   role_arn        = aws_iam_role.eks_cni.arn
@@ -85,7 +90,9 @@ resource "aws_eks_pod_identity_association" "vpc_cni" {
 # Amazon VPC CNI managed add-on.
 # Provides VPC-native networking and IP addresses to Kubernetes pods.
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name  = aws_eks_cluster.main.name
+  count = var.enable_eks ? 1 : 0
+
+  cluster_name  = aws_eks_cluster.main[0].name
   addon_name    = "vpc-cni"
   addon_version = "v1.22.4-eksbuild.3"
 
